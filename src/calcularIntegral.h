@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <math.h>
 
-char *calcularIntegral (double k) {
-    char output[20];
+
+
+char * calcularIntegral (double k, char *output) {
 
     //Altura 
     double h=0;
@@ -19,18 +20,16 @@ char *calcularIntegral (double k) {
     double resultado=0;
 
     //Resultado exato: 7853.98163
-
-    printf("K = %lf", k);
-    for (double i=0; i<100; i=i+k) {
-        x1 = i; 
-        x2 = i+k;
+    for (double i=k; i<=100; i=i+k) {
+        x1 = (i-k); 
+        x2 = k;
 
         f2 = sqrt(100*100 - x2*x2);
         f1 = sqrt(100*100 - x1*x1);
 
         resultado = resultado + (f1 + f2)*(x2 - x1) / 2;
     }
-
-    sprintf(output, "%f", resultado);
+    printf("Teste: %lf", resultado);
+    sprintf(output, "%lf", resultado);
     return output;
 }
