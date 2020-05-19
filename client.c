@@ -9,21 +9,23 @@
 #define MAX 80 
 #define PORT 8080 
 #define SA struct sockaddr 
+#define true 1
+#define false 0
+
 void func(int sockfd) 
-{ 
-    char buff[MAX]; 
+{   
+    char * k = malloc(MAX*sizeof(char));
     int n; 
-    for (;;) { 
-        bzero(buff, sizeof(buff)); 
-        printf("Enter the string : "); 
-        n = 0; 
-        while ((buff[n++] = getchar()) != '\n') 
-            ; 
-        write(sockfd, buff, sizeof(buff)); 
-        bzero(buff, sizeof(buff)); 
-        read(sockfd, buff, sizeof(buff)); 
-        printf("From Server : %s", buff); 
-        if ((strncmp(buff, "exit", 4)) == 0) { 
+    while (true) { 
+        bzero(k, sizeof(k));
+        printf("Digite o intervalo de discretização (0.0001, 0.00001 ou 0.000001) : ");
+        n = 0;
+        while ((k[n++] = getchar()) != '\n');
+        write(sockfd, k, sizeof(k));
+        bzero(k, sizeof(k)); 
+        read(sockfd, k, sizeof(k)); 
+        printf("From Server : %s", k); 
+        if ((strncmp(k, "exit", 4)) == 0) { 
             printf("Client Exit...\n"); 
             break; 
         } 

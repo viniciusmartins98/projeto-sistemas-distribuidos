@@ -10,7 +10,7 @@ Seu programa deve calcular a integral no intervalo [0,100], sendo que o mesmo de
 Seu programa deverá ser executado para as seguintes condições:  
  
 Número de escravos variando entre 1, 2, 4 e 10 escravos
-Intervalo de discretivação sendo 0.0001, 0.00001 e 0.000001
+Intervalo de discretização sendo 0.0001, 0.00001 e 0.000001
  
 Grupos de 2 ou 3 alunos (nem mais, nem menos) 
  

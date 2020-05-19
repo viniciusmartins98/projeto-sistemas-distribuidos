@@ -1,35 +1,46 @@
 #include <stdio.h> 
+#include <stdlib.h> 
+#include <string.h>
+
+//Bibliotecas SD
 #include <netdb.h> 
 #include <netinet/in.h> 
-#include <stdlib.h> 
 #include <string.h> 
 #include <sys/socket.h> 
 #include <sys/types.h>
 #include <unistd.h>
+#include "calcularIntegral.h"
 
 #define MAX 80 
 #define PORT 8080 
 #define SA struct sockaddr 
-  
+#define true 1
+#define false 0
+//lsof -i :[Porta]
 // Function designed for chat between client and server. 
 void func(int sockfd) 
-{ 
-    char buff[MAX]; 
-    int n; 
+{   
+    char * buff = malloc(MAX*sizeof(char));
+    char * output = malloc(MAX*sizeof(char));
+    int n;
     // infinite loop for chat 
-    for (;;) { 
+    while (true) { 
         bzero(buff, MAX); 
-  
+
+        printf("Entrou aqui 1!");
         // read the message from client and copy it in buffer 
         read(sockfd, buff, sizeof(buff)); 
-        // print buffer which contains the client contents 
-        printf("From client: %s\t To client : ", buff); 
-        bzero(buff, MAX); 
-        n = 0; 
-        // copy server message in the buffer 
-        while ((buff[n++] = getchar()) != '\n') 
-            ; 
-  
+        // print buffer which contains the client contents
+        
+        //printf("From client: %s", buff);
+
+        double k = atof(buff);
+        buff = calcularIntegral(k, output);
+        n = 0;
+        // // copy server message in the buffer 
+        // while ((buff[n++] = getchar()) != '\n') 
+        //      ; 
+
         // and send that buffer to client 
         write(sockfd, buff, sizeof(buff)); 
   
