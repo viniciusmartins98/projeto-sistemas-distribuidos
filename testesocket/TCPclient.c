@@ -21,6 +21,38 @@
 |size of the address: Size of server_address       |
 |return: integer                                   |
 ---------------------------------------------------+*/
+int startCommunication(int network_socket) {
+    int message_info = 0;       // number of slaves
+    double message_data = 0;    // discretization interval number
+    
+    printf("Digite o número de escravos: ");
+    scanf("%d", &message_info);
+    
+    // send number os slaves to server
+    send(network_socket, &message_info, sizeof(message_info), 0);
+
+    // receive server confirmation
+    recv(network_socket, &message_info, sizeof(message_info), 0);
+    
+    // print out the server's response
+    printf("Confirmação número de escravos: %d\n", message_info);
+    
+    // data which is gonna be sent to server
+    printf("Digite o valor do intervalo: ");
+    scanf("%lf", &message_data);
+
+    // send data to server
+    send(network_socket, &message_data, sizeof(message_data), 0);
+
+    // recieve processed data from server
+    recv(network_socket, &message_data, sizeof(message_data), 0);
+
+    //print out the server's response
+    printf("Resultado da integral: %f\n", message_data);
+
+    return 1;
+}
+
 int main() {
     
     // create a socket
@@ -44,17 +76,7 @@ int main() {
         exit(0);
     }
 
-    // data which is gonna be sent to server
-    double message_data = 0.0001;
-
-    // send data to server
-    send(network_socket, &message_data, sizeof(message_data), 0);
-
-    // recieve processed data from server
-    recv(network_socket, &message_data, sizeof(message_data), 0);
-
-    //print out the server's response
-    printf("The server answer: %f\n", message_data);
+    startCommunication(network_socket);
 
     // and then close the socket
     close(network_socket);
