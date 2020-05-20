@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include <arpa/inet.h>    // htons(), inet_addr()
 //#include <netdb.h>
-#define MAX 80 
+#define MAX 1000 
 #define PORT 8080 
 #define SA struct sockaddr 
 #define true 1
@@ -14,18 +14,22 @@
 
 void func(int sockfd) 
 {   
-    char * k = malloc(MAX*sizeof(char));
+    int iResult;
+    double k=0;
     int n; 
     while (true) { 
-        bzero(k, sizeof(k));
         printf("Digite o intervalo de discretização (0.0001, 0.00001 ou 0.000001) : ");
         n = 0;
-        while ((k[n++] = getchar()) != '\n');
-        write(sockfd, k, sizeof(k));
-        bzero(k, sizeof(k)); 
-        read(sockfd, k, sizeof(k)); 
-        printf("From Server : %s", k); 
-        if ((strncmp(k, "exit", 4)) == 0) { 
+        scanf("%lf", &k);
+        iResult = send(sockfd, &k, sizeof(k), 0);
+        if(iResult == -1) {
+            printf("Erro de envio!");
+            break;
+        }
+
+        recv(sockfd, &k, sizeof(k), 0);
+        printf("From Server : %f\n", k); 
+        if (k == -1) { 
             printf("Client Exit...\n"); 
             break; 
         } 
@@ -38,7 +42,7 @@ int main()
     struct sockaddr_in servaddr, cli; 
   
     // socket create and varification 
-    sockfd = socket(AF_INET, SOCK_STREAM, 0); 
+    sockfd = socket(AF_INET, SOCK_STREAM, 1); 
     if (sockfd == -1) { 
         printf("socket creation failed...\n"); 
         exit(0); 

@@ -2,31 +2,35 @@
 #include <stdlib.h>
 #include <math.h>
 
-double calcularIntegral (double k) {
-
-    //Altura 
-    double h=0;
+double resolveIntegral (double k) {
     
-    //valores das funções. Representam a altura do trapézio.
     double f1=0;
     double f2=0;
 
-    //x1 e x2 representam os limites do intervalo
     double x1=0;
     double x2=0;
 
     double resultado=0;
 
+
+    //(B + b)h/2
+
+    //B = f(x1)
+    //b = f(x2)
+    //h = x2 - x1
+    //f(x) = sqrt(100² - x²);
+
     //Resultado exato: 7853.98163
+
     for (double i=k; i<=100; i=i+k) {
         x1 = (i-k); 
-        x2 = k;
+        x2 = i;
 
         f2 = sqrt(100*100 - x2*x2);
         f1 = sqrt(100*100 - x1*x1);
 
         resultado = resultado + (f1 + f2)*(x2 - x1) / 2;
     }
-    
+
     return resultado;
 }

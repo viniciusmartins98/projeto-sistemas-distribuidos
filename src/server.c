@@ -11,7 +11,7 @@
 #include <unistd.h>
 #include "calcularIntegral.h"
 
-#define MAX 80 
+#define MAX 1000 
 #define PORT 8080 
 #define SA struct sockaddr 
 #define true 1
@@ -20,35 +20,32 @@
 // Function designed for chat between client and server. 
 void func(int sockfd) 
 {   
-    char * buff = malloc(MAX*sizeof(char));
-    char * output = malloc(MAX*sizeof(char));
-    int n;
+    double k = 0;
+
     // infinite loop for chat 
     while (true) { 
-        bzero(buff, MAX); 
 
-        printf("Entrou aqui 1!");
-        // read the message from client and copy it in buffer 
-        read(sockfd, buff, sizeof(buff)); 
-        // print buffer which contains the client contents
-        
-        //printf("From client: %s", buff);
+        printf("Esperando mensagem...");
+        // read the message from client and copy it in buffer
+        recv(sockfd, &k, sizeof(k), 0);
+        // read(sockfd, buff, sizeof(buff)); 
 
-        double k = atof(buff);
-        buff = calcularIntegral(k, output);
-        n = 0;
+        printf("From client: %f", k);
+
+        k = calcularIntegral(k);
         // // copy server message in the buffer 
         // while ((buff[n++] = getchar()) != '\n') 
         //      ; 
 
         // and send that buffer to client 
-        write(sockfd, buff, sizeof(buff)); 
+        // write(sockfd, k, sizeof(buff));
+        send(sockfd, &k, sizeof(k), 0);
   
-        // if msg contains "Exit" then server exit and chat ended. 
-        if (strncmp("exit", buff, 4) == 0) { 
-            printf("Server Exit...\n"); 
-            break; 
-        } 
+        // // if msg contains "Exit" then server exit and chat ended. 
+        // if (strncmp("exit", k, 4) == 0) { 
+        //     printf("Server Exit...\n"); 
+        //     break; 
+        // } 
     } 
 } 
   
@@ -59,7 +56,7 @@ int main()
     struct sockaddr_in servaddr, cli; 
   
     // socket create and verification 
-    sockfd = socket(AF_INET, SOCK_STREAM, 0); 
+    sockfd = socket(AF_INET, SOCK_STREAM, 1); 
     if (sockfd == -1) { 
         printf("socket creation failed...\n"); 
         exit(0); 
@@ -100,7 +97,9 @@ int main()
         printf("server acccept the client...\n"); 
   
     // Function for chatting between client and server 
+    printf("Teste!!!");
     func(connfd); 
+    printf("Teste 2!!!");
   
     // After chatting close the socket 
     close(sockfd); 
