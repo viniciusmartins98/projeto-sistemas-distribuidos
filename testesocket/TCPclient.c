@@ -6,6 +6,8 @@
 
 #include <netinet/in.h> //Stores address information
 
+#define error -1
+
 
     //Cast server addres to different structure
 
@@ -24,31 +26,66 @@
 int startCommunication(int network_socket) {
     int message_info = 0;       // number of slaves
     double message_data = 0;    // discretization interval number
+    int status = 0;
+    int count_try = 0;
+
+    char char_buffer [300];
     
-    printf("Digite o número de escravos: ");
+    printf("(Client) Digite o número de escravos: ");
     scanf("%d", &message_info);
     
-    // send number os slaves to server
-    send(network_socket, &message_info, sizeof(message_info), 0);
+    // Try sending message 5 times, after that stops
+    do {
+        // (SEND 1) - send number os slaves to server
+        status = send(network_socket, &message_info, sizeof(message_info), 0);
+        // verifies if sent information correctly
+        if(status == -1) {
+            printf("(Client) Attempt %d failed...\n", count_try);
+        }
+        count_try++;
+    }  while(status == error && count_try <= 5);
+    if(count_try == 5) {
+        close(network_socket);
+        printf("(Client) Não foi possível enviar a mensagem ao servidor\n");
+        exit(0);
+    }
+    count_try = 0;
 
-    // receive server confirmation
-    recv(network_socket, &message_info, sizeof(message_info), 0);
-    
+    // (RECV 1) - receive server confirmation
+    recv(network_socket, &char_buffer, sizeof(char_buffer), 0);
     // print out the server's response
-    printf("Confirmação número de escravos: %d\n", message_info);
+    printf("\n%s \n\n", char_buffer);
     
-    // data which is gonna be sent to server
-    printf("Digite o valor do intervalo: ");
+    // discretization interval which going to be sent to server.
+    printf("(Client) Digite o valor do intervalo: ");
     scanf("%lf", &message_data);
 
-    // send data to server
-    send(network_socket, &message_data, sizeof(message_data), 0);
+    // Try sending message 5 times, after that stops
+    do {
+        // // (SEND 2) - send discretization interval to server
+        send(network_socket, &message_data, sizeof(message_data), 0);
+        // verifies if it sends information correctly
+        if(status == -1) {
+            printf("(Client) Attempt %d failed...\n", count_try);
+        }
+        count_try++;
+    }  while(status == error && count_try <= 5);
+    if(count_try == 5) {
+        close(network_socket);
+        printf("(Client) Não foi possível enviar a mensagem ao servidor\n");
+        exit(0);
+    }
+    count_try = 0;
 
-    // recieve processed data from server
+    // (RECV 2) - confirm how many slaves was created
+    recv(network_socket, &char_buffer, sizeof(char_buffer), 0);
+    printf("\n%s \n\n", char_buffer);
+
+    // (RECV 3) - recieve processed data from server (integral answer)
     recv(network_socket, &message_data, sizeof(message_data), 0);
 
-    //print out the server's response
-    printf("Resultado da integral: %f\n", message_data);
+    //print out final server's response
+    printf("(Client) Resultado da integral: %f\n", message_data);
 
     return 1;
 }

@@ -6,15 +6,16 @@
 
 #include <netinet/in.h>
 
+#include <string.h>
 #include "calculator.h"
 
 int main() {
+    double final_result = 0;
 
-    double result = 0;
-
+    //Variables of transaction between client and server
     double db_client_message = 0;
-
     int int_client_message = 0;
+    char char_server_message[300];
 
     // create the server socket
     int server_socket;
@@ -36,14 +37,36 @@ int main() {
     int client_socket;
     client_socket = accept(server_socket, NULL, NULL);
 
-    // recieve number of slaves from client
+    // (RECV 1) - receive number of slaves from client
     recv(client_socket, &int_client_message, sizeof(int_client_message), 0);
 
-    // send confirmation to client
-    send(client_socket, &int_client_message, sizeof(int_client_message), 0);
+    // (SEND 1) - send a string confirmation to client
+    sprintf(char_server_message, "(Server) Recebido, criando %d escravos...", int_client_message);
+    send(client_socket, &char_server_message, sizeof(char_server_message), 0);
+    
+    //--------------------------
+        int created_slaves = int_client_message; //Cria os escravos
+    //---------------------------
 
-    // recieve discretization interval
+    // (SEND 2) - confirma quantos escravos foram criados
+    sprintf(char_server_message, "(Server) Foram criados %d escravos!", created_slaves);
+    send(client_socket, &char_server_message, sizeof(char_server_message), 0);
+
+    // (RECV 2) - recieve discretization interval
     recv(client_socket, &db_client_message, sizeof(db_client_message), 0);
+
+    // proccess data from client------------------------
+    final_result = resolveIntegral(db_client_message);
+
+    //--------------------------------------------------
+    // (SEND 3) - send the processed data to client
+    send(client_socket, &final_result, sizeof(final_result), 0);
+
+    // close the socket;
+    close(server_socket);
+
+    return 0;
+}
 
     // int server_socket_array[int_client_message];
     // for (int i=0; i < int_client_message; i++){
@@ -61,15 +84,3 @@ int main() {
     //     // wait for client connection
     //     listen(server_socket, 5);
     // }
-    
-    // processe data from client
-    result = resolveIntegral(db_client_message);
-
-    // send the processed data to client
-    send(client_socket, &result, sizeof(result), 0);
-
-    // close the socket;
-    close(server_socket);
-
-    return 0;
-}
