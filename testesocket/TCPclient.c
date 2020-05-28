@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h> // Função close
 
-#include <sys/types.h>
+#include <sys/types.h> // Constantes e funções referentes à criação de socket
 #include <sys/socket.h>
 
-#include <netinet/in.h> //Stores address information
+#include <netinet/in.h> // Stores address information
 
 #define error -1
 
