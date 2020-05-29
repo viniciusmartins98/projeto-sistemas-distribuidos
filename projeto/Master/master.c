@@ -147,8 +147,7 @@ int main() {
 
     printf("(Master) Digite o número de escravos: ");
     scanf("%d", &slave_number);
-
-    printf("%d", slave_number);
+    
     // create an array of sockets with size of number of slaves
     int * network_socket = malloc(slave_number*sizeof(int));
 
