@@ -39,6 +39,9 @@ void startCommunication(int client_socket) {
 
     // recebe o intervalo de discretização (k)
     recv(client_socket, &k, sizeof(k), 0);
+    if(k == -100.0) {
+        return;
+    }
 
     // recebe valor inicial do intervalo (init)
     recv(client_socket, &init, sizeof(init), 0);

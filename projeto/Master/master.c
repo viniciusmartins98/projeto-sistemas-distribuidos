@@ -36,7 +36,7 @@ int calculate_interval(int num_slave, int init, int final){
 // Try to sent message 5 times, after that stops
 int trySentDoubleMessage(int network_socket, double k) {
     int status=0;
-    int count_try=0;
+    int count_try=1;
 
     do {
         // send k (discretization interval)
@@ -44,11 +44,11 @@ int trySentDoubleMessage(int network_socket, double k) {
         status = send(network_socket, &k, sizeof(k), 0);
         // verifies if sent information correctly
         if(status == -1) {
-            printf("(Master) Conexão %d falhou..\n", count_try);
+            printf("(Master) Tentativa %d falhou..\n", count_try);
         }
         count_try++;
     }  while(status == error && count_try <= 5);
-    if(count_try == 5) {
+    if(count_try == 6) {
         close(network_socket);
         printf("(Master) Não foi possível enviar a mensagem ao escravo.\n");
         exit(0);
@@ -90,11 +90,17 @@ int startCommunication(int *network_socket, int slave_number) {
     int interval = calculate_interval(slave_number, init, final);
     final = interval;
 
+    int i = 0;
+    // close slaves which isn't going to be used, -100.0 is the code for close slave connection
+    for (i = slave_number; i < 10; i++) {
+        trySentDoubleMessage(network_socket[i], -100.0);
+    }
+
     // discretization interval which going to be sent to server.
     printf("(Master) Digite o valor do intervalo de discretização: ");
     scanf("%lf", &k);
     
-    for (int i = 0; i < slave_number; i++) {
+    for (i = 0; i < slave_number; i++) {
         // send discretization interval for server
         trySentDoubleMessage(network_socket[i], k);
 
@@ -148,12 +154,12 @@ int main() {
     printf("(Master) Digite o número de escravos: ");
     scanf("%d", &slave_number);
     
-    // create an array of sockets with size of number of slaves
-    int * network_socket = malloc(slave_number*sizeof(int));
+    // create an array which stores 10 network_sockets
+    int * network_socket = malloc(10*sizeof(int));
 
     // set up connections
     int port_number = 9000;
-    for(int i=0; i<slave_number; i++) {
+    for(int i=0; i<10; i++) {
         network_socket[i] = setUpConnection(network_socket[i], server_address, port_number);
         port_number++;
     }
