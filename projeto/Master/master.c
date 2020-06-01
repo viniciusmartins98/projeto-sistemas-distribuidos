@@ -78,8 +78,6 @@ int trySentIntMessage(int network_socket, int k) {
 
 // start sending messages to slaves so they can proccess and return our answer
 int startCommunication(int *network_socket, int slave_number) {
-    printf("TESTE TETE");
-
     // params for the Distributed System
     double k=0; // discretization interval number
     
