@@ -33,10 +33,10 @@ int calculate_interval(int num_slave, int init, int final){
     return interval/num_slave;
 }
 
-// Try to sent message 5 times, after that stops
+// Try to sent a double message 5 times, after that stops
 int trySentDoubleMessage(int network_socket, double k) {
-    int status=0;
-    int count_try=1;
+    int status = 0; // stores status of connection
+    int count_try = 1; // count number of attempts to slave
 
     do {
         // send k (discretization interval)
@@ -54,38 +54,42 @@ int trySentDoubleMessage(int network_socket, double k) {
         exit(0);
     }
 }
+
+// Try to sent an int message 5 times, after that stops
 int trySentIntMessage(int network_socket, int k) {
-    int status=0;
-    int count_try=0;
+    int status = 0; // stores status of connection
+    int count_try = 1; // count number of attempts to slave
 
     do {
         // send k (discretization interval)
         status = send(network_socket, &k, sizeof(k), 0);
         // verifies if sent information correctly
         if(status == -1) {
-            printf("(Master) Conexão %d falhou..\n", count_try);
+            printf("(Master) Tentativa %d falhou..\n", count_try);
         }
         count_try++;
     }  while(status == error && count_try <= 5);
-    if(count_try == 5) {
+    if(count_try == 6) {
         close(network_socket);
         printf("(Master) Não foi possível enviar a mensagem ao escravo.\n");
         exit(0);
     }
 }
 
+// start sending messages to slaves so they can proccess and return our answer
 int startCommunication(int *network_socket, int slave_number) {
+    printf("TESTE TETE");
+
     // params for the Distributed System
-    double k = 0; // discretization interval number
-    int init=0; // init and final intervals of wich server is going to work        
+    double k=0; // discretization interval number
+    
+    // init and final intervals of which slave is going to work   
+    int init=0;      
     int final=100; 
 
     // vars which is gonna store the partial integral result and final_result respectively
-    double integral_result = 0; // result provided by a slave adding in a sum
+    double partial_result = 0; // result provided by a slave adding in a sum
     double final_result = 0; // final result = sum of all slaves result
-
-    int status = 0; // stores status of connection
-    int count_try = 0; // count number of attempts to slave
     
     int interval = calculate_interval(slave_number, init, final);
     final = interval;
@@ -110,26 +114,31 @@ int startCommunication(int *network_socket, int slave_number) {
         // send final interval for server
         trySentIntMessage(network_socket[i], final);
 
-        // (RECV 1) - recieve processed data from server (integral answer)
-        recv(network_socket[i], &integral_result, sizeof(integral_result), 0);
+        // recieve processed data from server (integral answer)
+        recv(network_socket[i], &partial_result, sizeof(partial_result), 0);
 
-        final_result = final_result + integral_result;
+        // in each iteration final_result is added to partial_results
+        final_result = final_result + partial_result;
+
+        // calculate new intervals to next slave
         init = init + interval;
         final = init + interval;
     }
 
-    //print out final server's response
+    // print out final server's response
     printf("(Mestre) Resultado final da integral: %f\n", final_result);
 
     return 1;
 }
 
+// set up socket configurations for each socket which is going to connect with slaves 
 int setUpConnection(int network_socket, struct sockaddr_in server_address, int port_number) {
+
+    network_socket = socket(AF_INET, SOCK_STREAM, 0); // define properties of network_socket
+    server_address.sin_port = htons(port_number); // htons converts port from integer to an apropriate format
+
     //  0 => OK 
     // -1 => SOME ERROR IN CONNECTION
-    network_socket = socket(AF_INET, SOCK_STREAM, 0);
-    server_address.sin_port = htons(port_number); // htons converts 9000 port integer to an apropriate format
-
     int connection_status = connect(network_socket, (struct sockaddr *) &server_address, sizeof(server_address));
     // check for error with the connection
     if(connection_status == -1) {
@@ -137,7 +146,6 @@ int setUpConnection(int network_socket, struct sockaddr_in server_address, int p
         close(network_socket);
         exit(0);
     }
-
 
     return network_socket;
 }
@@ -149,8 +157,9 @@ int main() {
     // specify address configurations for  all sockets, port number is going to be set later (one port by server)
     struct sockaddr_in server_address;
     server_address.sin_family = AF_INET;
-    server_address.sin_addr.s_addr = INADDR_ANY; // set up the server address 0.0.0.0 = INADDR_ANY
+    server_address.sin_addr.s_addr = INADDR_ANY;
 
+    // get number of slaves which is going to be used
     printf("(Master) Digite o número de escravos: ");
     scanf("%d", &slave_number);
     
@@ -164,9 +173,10 @@ int main() {
         port_number++;
     }
 
+    // start communication with slaves, so they can calculate our integral
     startCommunication(network_socket, slave_number);
 
-    // and then close the socket
+    // close the socket
     for(int i=0; i<slave_number; i++)
         close(network_socket[i]);
 

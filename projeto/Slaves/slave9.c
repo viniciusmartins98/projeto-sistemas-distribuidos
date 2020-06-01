@@ -53,7 +53,7 @@ void startCommunication(int client_socket) {
 
     // proccess data from client
     final_result = resolveIntegral(k, init, final);
-    printf("(Slave 9) resultado parcial: %lf\n", final_result);
+    printf("(Slave 9) resultado parcial: %lf\n\n", final_result);
 
     // (SEND 1) - Envia o resultado parcial da integral
     send(client_socket, &final_result, sizeof(final_result), 0);
