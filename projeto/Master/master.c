@@ -153,7 +153,6 @@ int setUpConnection(int network_socket, struct sockaddr_in server_address, int p
 int main() {
     int slave_number = 0;
 
-
     // specify address configurations for  all sockets, port number is going to be set later (one port by server)
     struct sockaddr_in server_address;
     server_address.sin_family = AF_INET;
