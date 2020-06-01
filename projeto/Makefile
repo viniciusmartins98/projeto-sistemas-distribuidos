@@ -22,5 +22,4 @@ run:
 	./slave8 &
 	./slave9 &
 	./slave10 &
-	sleep 2
 	./master
