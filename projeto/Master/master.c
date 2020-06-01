@@ -9,6 +9,10 @@
 
 #include <netinet/in.h> //Stores address information
 
+#include <string.h>
+#include<errno.h>
+extern int errno;
+
 #define error -1
 
 
@@ -137,10 +141,11 @@ int setUpConnection(int network_socket, struct sockaddr_in server_address, int p
 
     //  0 => OK 
     // -1 => SOME ERROR IN CONNECTION
+    
     int connection_status = connect(network_socket, (struct sockaddr *) &server_address, sizeof(server_address));
     // check for error with the connection
     if(connection_status == -1) {
-        printf("Houve um erro ao fazer a conexão com um socket remoto.\n\n");
+        printf("\n\nerrno %d: %s\n\n", errno, strerror(errno));
         close(network_socket);
         exit(0);
     }

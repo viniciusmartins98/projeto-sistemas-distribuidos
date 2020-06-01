@@ -73,7 +73,9 @@ int main() {
     int client_socket; // client socket which is going to be receive the answer
 
     // set up the server address
+    int TRUE = 1;
     server_socket = socket(AF_INET, SOCK_STREAM, 0);
+    setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, &(TRUE), sizeof(TRUE));
     setUpAndBindServerAddress(server_address, server_socket);
 
     client_socket = listenMaster(server_socket);
