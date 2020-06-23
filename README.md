@@ -15,3 +15,8 @@ Intervalo de discretização sendo 0.0001, 0.00001 e 0.000001
 Grupos de 2 ou 3 alunos (nem mais, nem menos) 
  
 ENTREGA: 01/06, até 23h59, por e-mail para aleardo.manacero@unesp.br , sendo necessário fazer sua apresentação na semana seguinte (ou quando voltarmos).
+
+### Execução
+Para executar o programa são necessários apenas 2 comandos:
+> make all // Realiza a compilação de todos os arquivos necessários
+> make run // Executa os executáveis do slave em segundo plano e em seguida executa o meste em primeiro plano
