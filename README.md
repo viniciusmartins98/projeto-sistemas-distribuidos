@@ -18,5 +18,5 @@ ENTREGA: 01/06, até 23h59, por e-mail para aleardo.manacero@unesp.br , sendo ne
 
 ### Execução
 Para executar o programa são necessários apenas 2 comandos:
-> make all
-> make run
+> make all <
+> make run <
