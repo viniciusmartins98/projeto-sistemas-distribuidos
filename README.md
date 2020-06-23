@@ -18,7 +18,11 @@ ENTREGA: 01/06, até 23h59, por e-mail para aleardo.manacero@unesp.br , sendo ne
 
 ### Execução
 Para executar o programa são necessários apenas 2 comandos:
+
 > make all
+
 Este comando é utilizado para compilar todos os arquivos necessários
+
 > make run
+
 Este comando é utilizado para executar o nosso programa, inicializa todos os slaves em segundo plano e o master em primeiro plano.
