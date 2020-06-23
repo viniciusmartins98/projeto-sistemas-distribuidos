@@ -18,5 +18,5 @@ ENTREGA: 01/06, até 23h59, por e-mail para aleardo.manacero@unesp.br , sendo ne
 
 ### Execução
 Para executar o programa são necessários apenas 2 comandos:
-> make all // Realiza a compilação de todos os arquivos necessários
-> make run // Executa os executáveis do slave em segundo plano e em seguida executa o meste em primeiro plano
+> make all
+> make run
