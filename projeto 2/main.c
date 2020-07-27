@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <mpi.h>
 #include "utils.h"
 
@@ -8,6 +9,7 @@ int main(int argc, char **argv) {
     double resultado_final = 0; 
     double tempo_inicial = 0;
     double tempo_final = 0;
+    double k = atof(argv[1]);
     int id_proc, total_proc, id_slave, mestre, tag;
     int interval;
     //MPI_Status status;
@@ -25,7 +27,7 @@ int main(int argc, char **argv) {
         mestre = 0; // Id do mestre é 0
         tag = 0; //
         interval = calculate_interval(total_proc - 1, 0, 100); // Calcula o intervalo da integral que cada slave irá calcular
-        resultado_parcial = resolveIntegral(0.000001, id_proc, interval); // O slave de identificador "id_proc" calcula o seu resultado parcial dentro do seu intervalo
+        resultado_parcial = resolveIntegral(k, id_proc, interval); // O slave de identificador "id_proc" calcula o seu resultado parcial dentro do seu intervalo
         MPI_Send(&resultado_parcial, sizeof(double), MPI_DOUBLE, mestre, tag, MPI_COMM_WORLD); // Slave envia o resultado para o mestre
         printf("(SLAVE %d) Resultado parcial = %lf\n", id_proc, resultado_parcial); //É exibido o intervalo parcial calculado pelo slave
     }
