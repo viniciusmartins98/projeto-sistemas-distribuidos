@@ -2,35 +2,6 @@
 #include <math.h>
 #include <time.h>
 
-#define error -1
-
-// verifies if is executing on windows or linux OS.
-#ifdef WIN32
-
-#include <windows.h>
-
-// Função para calcular tempo no windows
-double get_time() {
-    LARGE_INTEGER t, f;
-    QueryPerformanceCounter(&t);
-    QueryPerformanceFrequency(&f);
-    return (double)t.QuadPart/(double)f.QuadPart;
-}
-
-#else
-
-#include <sys/time.h>
-#include <sys/resource.h>
-
-// Função para calcular tempo no linux
-double get_time() {
-    struct timeval t;
-    struct timezone tzp;
-    gettimeofday(&t, &tzp);
-    return t.tv_sec + t.tv_usec*1e-6;
-}
-#endif
-
 double resolveIntegral (double k, int num_proc, double interval) {
     double f1=0;
     double f2=0;
