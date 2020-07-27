@@ -30,7 +30,7 @@ double resolveIntegral (double k, int num_proc, double interval) {
     return resultado;
 }
 
-// calculates size of interval which is going to be divided for servers
+// Calcula o tamanho do intervalo que será dividido entre os escravos
 int calculate_interval(int num_slave, int init, int final){
     int interval = final - init;
     return interval/num_slave;
