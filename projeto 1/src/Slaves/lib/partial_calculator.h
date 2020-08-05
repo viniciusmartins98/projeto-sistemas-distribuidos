@@ -36,9 +36,3 @@ double resolveIntegral (double k, double init, double final) {
 
     return resultado;
 }
-
-// calculates size of interval which is going to be divided for servers
-int calculate_interval(int num_slave, int init, int final){
-    int interval = final - init;
-    return interval/num_slave;
-}
